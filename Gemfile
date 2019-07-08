@@ -6,11 +6,18 @@ gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'jquery-rails'
 gem 'turbolinks'
+gem 'rake', '< 11.0'
 
 group :development, :test do
   gem 'byebug'
   gem 'sqlite3', '1.3.11'
-  gem 'rspec-rails', '2.13.1'
+  gem 'rspec-rails', '~> 3.7'
+  gem 'rspec', '~> 3.7'
+  gem 'test-unit'
+end
+
+group :test do
+  gem 'capybara', '> 2.2.0'
 end
 
 group :development do
