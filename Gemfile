@@ -10,6 +10,7 @@ gem 'turbolinks'
 group :development, :test do
   gem 'byebug'
   gem 'sqlite3', '1.3.11'
+  gem 'rspec-rails', '2.13.1'
 end
 
 group :development do
