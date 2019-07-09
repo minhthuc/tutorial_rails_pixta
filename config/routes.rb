@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
   root 'static_page#home'
-  get 'users/new'
 
   match '/signup', to: 'users#new', via: 'get'
   match '/help', to: 'static_page#help', via: 'get'
@@ -9,6 +8,7 @@ Rails.application.routes.draw do
   match '/contact', to: 'static_page#contact', via: 'get'
 
   resources :microposts
+  resources :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
