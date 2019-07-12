@@ -1,21 +1,24 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.11.1'
-gem 'sass-rails', '~> 5.0'
-gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.1.0'
-gem 'jquery-rails'
-gem 'turbolinks'
-gem 'rake', '< 11.0'
-gem 'bootstrap-sass', '2.3.2.0'
-gem 'sprockets', '3.7.2'
 gem 'bcrypt-ruby', '3.1.2'
+gem 'bootstrap-sass', '2.3.2.0'
+gem 'bootstrap-will_paginate', '0.0.9'
+gem 'coffee-rails', '~> 4.1.0'
+gem 'faker', '1.1.2'
+gem 'jquery-rails'
+gem 'rails', '4.2.11.1'
+gem 'rake', '12.3.2'
+gem 'sass-rails', '~> 5.0'
+gem 'sprockets', '3.7.2'
+gem 'turbolinks'
+gem 'uglifier', '>= 1.3.0'
+gem 'will_paginate', '3.0.4'
 
 group :development, :test do
   gem 'byebug'
-  gem 'sqlite3', '1.3.11'
-  gem 'rspec-rails', '~> 3.7'
   gem 'rspec', '~> 3.7'
+  gem 'rspec-rails', '~> 3.7'
+  gem 'sqlite3', '1.3.11'
   gem 'test-unit'
 end
 
@@ -25,8 +28,8 @@ group :test do
 end
 
 group :development do
-  gem 'web-console', '~> 2.0'
   gem 'spring'
+  gem 'web-console', '~> 2.0'
 end
 
 group :doc do
