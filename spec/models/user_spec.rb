@@ -3,19 +3,21 @@
 require "spec_helper"
 
 describe User do
-  let(:user) {
+  let(:user) do
     User.new(name: "Example User", email: "user@example.com",
-             password: "foobar", password_confirmation: "foobar") }
+             password: "foobar", password_confirmation: "foobar") end
 
   subject { user }
 
-  it { should respond_to(:name) }
-  it { should respond_to(:email) }
-  it { should respond_to(:password_digest) }
-  it { should respond_to(:password) }
-  it { should respond_to(:password_confirmation) }
-  it { should respond_to(:remember_token) }
-  it { should respond_to(:authenticate) }
+  it { is_expected.to respond_to(:name) }
+  it { is_expected.to respond_to(:email) }
+  it { is_expected.to respond_to(:password_digest) }
+  it { is_expected.to respond_to(:password) }
+  it { is_expected.to respond_to(:password_confirmation) }
+  it { is_expected.to respond_to(:remember_token) }
+  it { is_expected.to respond_to(:authenticate) }
+  it { is_expected.to respond_to(:microposts) }
+  it { is_expected.to respond_to(:feed) }
 
   context "remember token" do
     before { user.save }
@@ -24,26 +26,26 @@ describe User do
 
   context "when name is not present" do
     before { user.name = " " }
-    it { should_not be_valid }
+    it { is_expected.not_to be_valid }
   end
 
   context "when name is nil" do
     before { user.name = nil }
-    it { should_not be_valid }
+    it { is_expected.not_to be_valid }
   end
 
   context "when password is nil" do
     before { user.name = nil }
-    it { should_not be_valid }
+    it { is_expected.not_to be_valid }
   end
 
   context "when password is nil" do
     before { user.password = nil }
-    it { should_not be_valid }
+    it { is_expected.not_to be_valid }
   end
 
   context "when email format is invalid" do
-    it "should be invalid" do
+    it "is_expected.to be invalid" do
       addresses = %w[user@foo,com user_at_foo.org example.user@foo.
                      foo@bar_baz.com foo@bar+baz.com]
       addresses.each do |invalid_address|
@@ -54,24 +56,24 @@ describe User do
   end
 
   context "when password is not present" do
-    let(:user) {
+    let(:user) do
       User.new(name: "Example User", email: "user@example.com",
-                password: " ", password_confirmation: " ") }
-    it { should_not be_valid }
+                password: " ", password_confirmation: " ") end
+    it { is_expected.not_to be_valid }
   end
 
   context "with a password that's too short" do
     before { user.password = user.password_confirmation = "a" * 5 }
-    it { should be_invalid }
+    it { is_expected.to be_invalid }
   end
 
   context "when password doesn't match confirmation" do
     before { user.password_confirmation = "mismatch" }
-    it { should_not be_valid }
+    it { is_expected.not_to be_valid }
   end
 
   context "when email format is valid" do
-    it "should be valid" do
+    it "is_expected.to be valid" do
       addresses = %w[user@foo.COM A_US-ER@f.b.org frst.lst@foo.jp a+b@baz.cn]
       addresses.each do |valid_address|
         user.email = valid_address
@@ -85,14 +87,15 @@ describe User do
       user_with_same_email.email = user.email.upcase
       user_with_same_email.save
     end
-    it { should_not be_valid }
+    it { is_expected.not_to be_valid }
   end
 
-  it { should respond_to(:authenticate) }
-  it { should respond_to(:admin) }
+  it { is_expected.to respond_to(:authenticate) }
+  it { is_expected.to respond_to(:admin) }
+  it { is_expected.to respond_to(:microposts) }
 
-  it { should be_valid }
-  it { should_not be_admin }
+  it { is_expected.to be_valid }
+  it { is_expected.not_to be_admin }
 
   describe "with admin attribute set to true" do
     before do
@@ -100,6 +103,39 @@ describe User do
       user.toggle!(:admin)
     end
 
-    it { should be_admin }
+    it { is_expected.to be_admin }
+  end
+
+  describe "micropost associations" do
+
+    before { user.save }
+    let!(:older_micropost) do
+      create(:micropost, user: user, created_at: 1.day.ago)
+    end
+    let!(:newer_micropost) do
+      create(:micropost, user: user, created_at: 1.hour.ago)
+    end
+
+    it "is_expected.to have the right microposts in the right order" do
+      expect(user.microposts.to_a).to eq [newer_micropost, older_micropost]
+    end
+
+    it "is_expected.to destroy associated microposts" do
+      microposts = user.microposts.to_a
+      user.destroy
+      expect(microposts).not_to be_empty
+      microposts.each do |micropost|
+        expect(Micropost.where(id: micropost.id)).to be_empty
+      end
+    end
+
+    describe "status" do
+      let(:unfollowed_post) do
+        FactoryGirl.create(:micropost, user: FactoryGirl.create(:user))
+      end
+      its(:feed) { is_expected.to include(newer_micropost) }
+      its(:feed) { is_expected.to include(older_micropost) }
+      its(:feed) { is_expected.not_to include(unfollowed_post) }
+    end
   end
 end

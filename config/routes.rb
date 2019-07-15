@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   match '/signin', to: 'sessions#new', via: 'get'
   match '/signout', to: 'sessions#destroy', via: 'DELETE'
 
-  resources :microposts
+  resources :microposts, only: %i[new create destroy]
   resources :users
   resources :sessions, only: %i[new create destroy]
   # The priority is based upon order of creation: first created -> highest priority.
