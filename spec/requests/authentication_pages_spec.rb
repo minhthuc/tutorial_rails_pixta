@@ -51,7 +51,7 @@ RSpec.feature do
     describe "as wrong user" do
       let(:user) { create(:user) }
       let(:wrong_user) { create(:user, email: "wrong@example.com") }
-      before { sign_in user, no_capybara: true }
+      before { sign_in user }
 
       describe "submitting a GET request to the Users#edit action" do
         before { get edit_user_path(wrong_user) }
@@ -77,12 +77,25 @@ RSpec.feature do
             fill_in "Password", with: user.password
             click_button "Sign in"
           end
+        end
 
-          describe "after signing in" do
+        describe "after signing in" do
 
-            it "should render the desired protected page" do
-              expect(page).to have_title("Edit user")
-            end
+          it "should render the desired protected page" do
+            expect(page).to have_title("Edit user")
+          end
+        end
+
+        describe "in the Microposts controller" do
+
+          describe "submitting to the create action" , type: :controller do
+            before { post microposts_path }
+            specify { expect(response).to redirect_to(signin_path) }
+          end
+
+          describe "submitting to the destroy action" do
+            before { delete micropost_path(create(:micropost)) }
+            specify { expect(response).to redirect_to(signin_path) }
           end
         end
       end
@@ -95,8 +108,8 @@ RSpec.feature do
       end
 
       describe "as non-admin user" do
-        let(:user) { FactoryGirl.create(:user) }
-        let(:non_admin) { FactoryGirl.create(:user) }
+        let(:user) { create(:user) }
+        let(:non_admin) { create(:user) }
 
         before { sign_in non_admin, no_capybara: true }
 

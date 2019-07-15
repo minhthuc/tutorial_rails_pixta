@@ -1,5 +1,10 @@
 class Micropost < ActiveRecord::Base
-  MAXIMUM_LENGTH = 140
+  MAX_LENGTH_CONTENT = 140
+
   belongs_to :user
-  validates :content, length: { maximum: MAXIMUM_LENGTH }
+
+  default_scope -> { order('created_at DESC') }
+
+  validates :user_id, presence: true
+  validates :content, presence: true, length: { maximum: MAX_LENGTH_CONTENT }
 end

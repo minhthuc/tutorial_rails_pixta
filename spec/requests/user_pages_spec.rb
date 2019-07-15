@@ -11,9 +11,10 @@ RSpec.feature do
       it { is_expected.to have_title(full_title("Sign up")) }
     end
     context "profile page" do
-      # Replace with code to make a user variable
 
       let(:user) { create(:user) }
+      let!(:m1) { create(:micropost, user: user, content: "Foo") }
+      let!(:m2) { create(:micropost, user: user, content: "Bar") }
 
       before { visit user_path(user) }
 

@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  has_many :microposts, dependent: :destroy
+
   MAX_LENGTH_NAME = 50
   EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   MINIMUM_PASSWORD = 6
