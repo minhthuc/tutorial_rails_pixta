@@ -1,17 +1,23 @@
-<% provide(:title, 'Home') %>
+<% provide(:title, "Home") %>
 <% if signed_in? %>
   <div class="row">
     <aside class="span4">
       <section>
-        <%= render 'shared/user_info' %>
+        <%= render "shared/user_info" %>
       </section>
+
       <section>
-        <%= render 'shared/micropost_form', micropost: @micropost %>
+        <%= render "shared/stats", user: @user %>
       </section>
+
+      <section>
+        <%= render "shared/micropost_form", micropost: @micropost %>
+      </section>
+
     </aside>
     <div class="span8">
       <h3>Micropost Feed</h3>
-      <%= render 'shared/feed' %>
+      <%= render "shared/feed" %>
     </div>
   </div>
 <% else %>
@@ -27,5 +33,5 @@
     <%= link_to "Sign up now!", signup_path, class: "btn btn-large btn-primary" %>
   </div>
 
-  <%= link_to image_tag("rails-logo.svg", alt: "Rails", class: "img_logo_rails"), 'http://rubyonrails.org/' %>
+  <%= link_to image_tag("rails-logo.svg", alt: "Rails", class: "img_logo_rails"), "http://rubyonrails.org/" %>
 <% end %>
