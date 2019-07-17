@@ -1,5 +1,6 @@
 class MicropostsController < ApplicationController
-  before_action :set_micropost, only: [:show, :edit, :update, :destroy]
+  before_action :signed_in_user, only: %i[create destroy]
+  before_action :correct_user, only: :destroy
 
   # GET /microposts
   def index
@@ -21,20 +22,17 @@ class MicropostsController < ApplicationController
 
   # POST /microposts
   def create
-    @micropost = Micropost.new(micropost_params)
-
-    if @micropost.save
-      redirect_to @micropost, notice: 'Micropost was successfully created.'
-    else
-      render :new
-    end
+    @micropost = current_user.microposts.build(micropost_params)
+    flash[:success] = "Micropost created" if @micropost.save
+    redirect_to root_path
   end
 
   # PATCH/PUT /microposts/1
   def update
     if @micropost.update(micropost_params)
-      redirect_to @micropost, notice: 'Micropost was successfully updated.'
+      redirect_to @micropost, notice: "Micropost was successfully updated."
     else
+      flash.now[:error] = "Can not edit this post!"
       render :edit
     end
   end
@@ -42,17 +40,20 @@ class MicropostsController < ApplicationController
   # DELETE /microposts/1
   def destroy
     @micropost.destroy
-    redirect_to microposts_url, notice: 'Micropost was successfully destroyed.'
+    redirect_to root_path, notice: "Micropost was successfully destroyed."
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_micropost
-      @micropost = Micropost.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def micropost_params
-      params.require(:micropost).permit(:content, :user_id)
+  def correct_user
+    @micropost = current_user.microposts.find_by(id: params[:id])
+    if @micropost.nil?
+      flash[:error] = "This post can not be found!"
+      redirect_to root_path
     end
+  end
+
+  def micropost_params
+    params.require(:micropost).permit(:content)
+  end
 end
