@@ -18,6 +18,11 @@ describe User do
   it { is_expected.to respond_to(:authenticate) }
   it { is_expected.to respond_to(:microposts) }
   it { is_expected.to respond_to(:feed) }
+  it { is_expected.to respond_to(:following?) }
+  it { is_expected.to respond_to(:followed_users) }
+  it { is_expected.to respond_to(:follow!) }
+  it { is_expected.to respond_to(:reverse_relationships) }
+  it { is_expected.to respond_to(:followers) }
 
   context "remember token" do
     before { user.save }
@@ -93,6 +98,10 @@ describe User do
   it { is_expected.to respond_to(:authenticate) }
   it { is_expected.to respond_to(:admin) }
   it { is_expected.to respond_to(:microposts) }
+  it { is_expected.to respond_to(:relationships) }
+  it { is_expected.to respond_to(:followed_users) }
+  it { is_expected.to respond_to(:follow!) }
+  it { is_expected.to respond_to(:unfollow!) }
 
   it { is_expected.to be_valid }
   it { is_expected.not_to be_admin }
@@ -136,6 +145,27 @@ describe User do
       its(:feed) { is_expected.to include(newer_micropost) }
       its(:feed) { is_expected.to include(older_micropost) }
       its(:feed) { is_expected.not_to include(unfollowed_post) }
+    end
+  end
+
+  describe "following" do
+    let (:other_user) { create(:user) }
+
+    before do
+      user.save
+      user.follow!(other_user)
+    end
+    it { is_expected.to be_following(other_user) }
+    its(:followed_users) { is_expected.to include(other_user) }
+    describe "and unfollowing" do
+      before { user.unfollow!(other_user) }
+
+      it { is_expected.to be_following(other_user) }
+      its(:followed_users) { is_expected.to_not include(other_user) }
+      describe "followed user" do
+        subject { other_user }
+        its(:followers) { is_expected.to include(user) }
+      end
     end
   end
 end
